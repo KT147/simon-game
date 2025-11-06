@@ -5,11 +5,18 @@ const userClickedPattern = [];
 let level = 0;
 let started = false;
 
-document.addEventListener("keydown", function () {
+function startGame() {
   if (!started) {
     started = true;
     nextSequence();
   }
+}
+
+
+document.querySelector("#level-title").addEventListener("click", startGame);
+document.querySelector("#level-title").addEventListener("touchstart", function(e) {
+  e.preventDefault();
+  startGame();
 });
 
 document.querySelectorAll(".btn").forEach(function (button) {
@@ -20,26 +27,29 @@ document.querySelectorAll(".btn").forEach(function (button) {
     animatePress(button);
     checkAnswer(userChosenColour);
   });
+
 });
 
 function nextSequence() {
   level++;
   document.querySelector("#level-title").textContent = "Level " + level;
 
-  const randomNumber = Math.floor(Math.random() * 3);
+  const randomNumber = Math.floor(Math.random() * 4);
   const randomChosenColour = buttonColours[randomNumber];
   gamePattern.push(randomChosenColour);
   playSound(randomChosenColour);
 
-  const element = document.querySelector("#" + randomChosenColour)
+  const element = document.querySelector("#" + randomChosenColour);
   animatePress(element);
 
   console.log(gamePattern);
 }
 
 function checkAnswer(currentLevel) {
-
-  if (gamePattern.slice(0, userClickedPattern.length).join() === userClickedPattern.join()) {
+  if (
+    gamePattern.slice(0, userClickedPattern.length).join() ===
+    userClickedPattern.join()
+  ) {
     if (userClickedPattern.length === gamePattern.length) {
       setTimeout(() => {
         nextSequence();
@@ -47,8 +57,6 @@ function checkAnswer(currentLevel) {
         userClickedPattern.length = 0;
       }, 1000);
     }
-  
-
   } else {
     playSound("wrong");
     document.querySelector("body").classList.add("game-over");
@@ -58,7 +66,7 @@ function checkAnswer(currentLevel) {
     startOver();
 
     document.querySelector("#level-title").textContent =
-      "Game Over, Press Any Key to Restart";
+      "Game Over, Press Here to Restart";
     console.log("wrong");
   }
 }
